@@ -155,7 +155,13 @@ def run_evaluation(
             result_data = json.loads(result_text)
             score = float(result_data.get("score", 0))
             passed = 1 if result_data.get("passed", False) else 0
-        except (json.JSONDecodeError, ValueError):
+        except (json.JSONDecodeError, ValueError) as e:
+            # Log warning for debugging but continue with null values
+            import logging
+            logging.warning(
+                f"Failed to parse judge response as JSON for completion {completion.id}: {e}. "
+                f"Raw response: {result_text[:200]}..."
+            )
             score = None
             passed = None
         
